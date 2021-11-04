@@ -5,6 +5,14 @@ import { delay, mergeMap, materialize, dematerialize } from 'rxjs/operators';
 
 // array in local storage for registered users
 let users = JSON.parse(localStorage.getItem('users')) || [];
+const dashboard = JSON.parse(localStorage.getItem('dashboard')) || {
+  table: [
+    {name: 'ABC DEF', birthYear: '1998',	skinColor: 'white',	gender: 'female'},
+    {name: 'GHI JKL', birthYear: '1999',	skinColor: 'black',	gender: 'male'},
+    {name: 'MNO PQR', birthYear: '2000',	skinColor: 'white',	gender: 'female'},
+  ],
+  statistics: []
+};
 
 @Injectable()
 export class FakeBackendInterceptor implements HttpInterceptor {
@@ -32,10 +40,14 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                     return updateUser();
                 case url.match(/\/users\/\d+$/) && method === 'DELETE':
                     return deleteUser();
+                case url.endsWith('/dashboard/table') && method === 'GET':
+                    return getDashboardTable();
+                case url.endsWith('/dashboard/statistics') && method === 'GET':
+                    return getDashboardStatistics();
                 default:
                     // pass through any requests not handled above
                     return next.handle(request);
-            }    
+            }
         }
 
         // route functions
@@ -102,6 +114,16 @@ export class FakeBackendInterceptor implements HttpInterceptor {
             users = users.filter(x => x.id !== idFromUrl());
             localStorage.setItem('users', JSON.stringify(users));
             return ok();
+        }
+
+        function getDashboardTable() {
+            if (!isLoggedIn()) return unauthorized();
+            return ok(dashboard.table);
+        }
+
+        function getDashboardStatistics() {
+            if (!isLoggedIn()) return unauthorized();
+            return ok(dashboard.statistics);
         }
 
         // helper functions

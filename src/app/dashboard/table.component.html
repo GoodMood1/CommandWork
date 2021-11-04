@@ -1,1 +1,24 @@
-﻿Hi tables
+﻿<h1>Table:</h1>
+<table class="table table-striped">
+  <thead>
+  <tr>
+    <th style="width: 30%">Name</th>
+    <th style="width: 30%">Birth Year</th>
+    <th style="width: 30%">Skin Color</th>
+    <th style="width: 10%">Gender</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let item of items">
+    <td>{{item.name}}</td>
+    <td>{{item.birthYear}}</td>
+    <td>{{item.skinColor}}</td>
+    <td>{{item.gender}}</td>
+  </tr>
+  <tr *ngIf="!items">
+    <td colspan="4" class="text-center">
+      <span class="spinner-border spinner-border-lg align-center"></span>
+    </td>
+  </tr>
+  </tbody>
+</table>
